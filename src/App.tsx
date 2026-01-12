@@ -13,6 +13,10 @@ import { IonReactRouter } from '@ionic/react-router';
 import { ellipse, square, triangle, search as searchIcon } from 'ionicons/icons';
 import Search from './pages/Search';
 import Home from './pages/Home';
+import MovieDetail from './pages/MovieDetail';
+import ReviewForm from './pages/ReviewForm';
+import Reviews from './pages/Reviews';
+import Profile from './pages/Profile';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -51,17 +55,26 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
+          <Route exact path="/movie/:id">
+            <MovieDetail />
+          </Route>
+          <Route exact path="/review/new">
+            <ReviewForm />
+          </Route>
+          <Route exact path="/review/:id/edit">
+            <ReviewForm />
+          </Route>
+          <Route exact path="/reviews">
+            <Reviews />
+          </Route>
+          <Route exact path="/profile">
+            <Profile />
+          </Route>
           <Route exact path="/">
             <Home />
           </Route>
           <Route exact path="/search">
             <Search />
-          </Route>
-          <Route exact path="/tab2">
-            <Tab2 />
-          </Route>
-          <Route path="/tab3">
-            <Tab3 />
           </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
@@ -73,13 +86,13 @@ const App: React.FC = () => (
             <IonIcon aria-hidden="true" icon={searchIcon} />
             <IonLabel>Buscar</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
+          <IonTabButton tab="reviews" href="/reviews">
             <IonIcon aria-hidden="true" icon={ellipse} />
-            <IonLabel>Tab 2</IonLabel>
+            <IonLabel>Reseñas</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
+          <IonTabButton tab="profile" href="/profile">
             <IonIcon aria-hidden="true" icon={square} />
-            <IonLabel>Tab 3</IonLabel>
+            <IonLabel>Perfil</IonLabel>
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
