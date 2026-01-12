@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, CardActionArea, CardMedia, CardContent, Typography, Box } from '@mui/material';
+import { Link } from 'react-router-dom';
 import tmdb from '../services/tmdb';
 
 interface Props {
@@ -15,7 +16,7 @@ const MovieCardMui: React.FC<Props> = ({ movie, compact = false }) => {
 
   return (
     <Card sx={sx}>
-      <CardActionArea href={`/movie/${movie.id}`}>
+      <CardActionArea component={Link} to={`/movie/${movie.id}`}>
         {poster ? (
           <CardMedia component="img" height={compact ? 320 : 400} image={poster} alt={movie.title} />
         ) : (
