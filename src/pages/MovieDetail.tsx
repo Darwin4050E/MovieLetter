@@ -124,6 +124,15 @@ const MovieDetail: React.FC = () => {
                     />
                   ))}
                 </Box>
+              
+                <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
+                  <Button variant="contained" sx={{ flex: 1 }} onClick={() => console.log('Agregar Favorito clicked', movie.id)}>
+                    Agregar Favorito
+                  </Button>
+                  <Button variant="outlined" sx={{ flex: 1 }} onClick={() => console.log('Ver más tarde clicked', movie.id)}>
+                    Ver más tarde
+                  </Button>
+                </Box>
               </Box>
             </Box>
 

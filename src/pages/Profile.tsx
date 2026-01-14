@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { Box, Typography, TextField, Button } from '@mui/material';
 import { getAll, deleteReview } from '../services/reviews';
+import MovieCardMui from '../components/MovieCardMui';
+import { getAll as getFavorites } from '../services/favorites';
 import { useHistory } from 'react-router-dom';
 
 const KEY = 'user_name';
@@ -11,6 +13,7 @@ const Profile: React.FC = () => {
   const [name, setName] = useState('');
   const [savedName, setSavedName] = useState(localStorage.getItem(KEY) || '');
   const [reviews, setReviews] = useState<any[]>([]);
+  const [favorites, setFavorites] = useState<any[]>([]);
 
   useEffect(() => {
     if (!savedName) {
@@ -20,6 +23,11 @@ const Profile: React.FC = () => {
     const all = getAll();
     setReviews(all.filter((r: any) => (r.author || '').toString() === savedName));
   }, [savedName]);
+
+  useEffect(() => {
+    const favs = getFavorites() || [];
+    setFavorites(favs.slice(0, 5));
+  }, []);
 
   const saveName = () => {
     if (!name || !name.trim()) return;
@@ -102,6 +110,19 @@ const Profile: React.FC = () => {
                       <Button size="small" variant="text" onClick={() => history.push(`/movie/${r.movieId}`)} sx={{ ml: 1 }}>Ver película</Button>
                     </Box>
                   </Box>
+                ))}
+              </Box>
+            )}
+          </Box>
+
+          <Box sx={{ mt: 3 }}>
+            <Typography variant="h6">Mis Favoritos</Typography>
+            {favorites.length === 0 ? (
+              <Typography sx={{ color: 'text.secondary' }}>Aún no tienes favoritas.</Typography>
+            ) : (
+              <Box sx={{ display: 'flex', gap: 2, overflowX: 'auto', py: 1, flexWrap: 'nowrap' }}>
+                {favorites.map((f: any) => (
+                  <MovieCardMui key={f.id} movie={f} compact />
                 ))}
               </Box>
             )}
