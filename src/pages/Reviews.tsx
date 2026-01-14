@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonViewWillEnter } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonViewWillEnter, IonButtons, IonButton, IonIcon } from '@ionic/react';
+import { search as searchIcon } from 'ionicons/icons';
 import { Box, Typography, Button } from '@mui/material';
 import SearchBar from '../components/SearchBar';
 import { getAll } from '../services/reviews';
@@ -17,10 +18,8 @@ const Reviews: React.FC = () => {
     const all = getAll();
     setReviews(all);
 
-    // fetch movie titles for unique movie ids
     const ids = Array.from(new Set(all.map((r: any) => r.movieId)));
     ids.forEach((mid) => {
-      // avoid refetch if we already have it
       if (titles[mid]) return;
       tmdb
         .getMovieDetails(mid)
@@ -51,6 +50,11 @@ const Reviews: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonTitle>Reseñas</IonTitle>
+          <IonButtons slot="end">
+            <IonButton routerLink="/search" aria-label="Buscar">
+              <IonIcon icon={searchIcon} />
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
@@ -70,9 +74,9 @@ const Reviews: React.FC = () => {
                   sx={{
                     p: 2,
                     borderRadius: 2,
-                    border: '1px solid rgba(255,255,255,0.12)',
-                    backgroundColor: 'rgba(255,255,255,0.02)',
-                    color: '#fff',
+                    border: '1px solid rgba(var(--ion-text-rgb),0.12)',
+                    backgroundColor: 'rgba(var(--ion-text-rgb),0.02)',
+                    color: 'var(--app-text)',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 1,
@@ -80,14 +84,14 @@ const Reviews: React.FC = () => {
                 >
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Typography variant="subtitle2">{r.author || 'Anónimo'}</Typography>
-                    <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)' }}>{r.rating} ⭐ • {r.date}</Typography>
+                    <Typography variant="caption" sx={{ color: 'var(--app-text-muted)' }}>{r.rating} ⭐ • {r.date}</Typography>
                   </Box>
 
-                  <Typography variant="body2" sx={{ color: '#fff' }}>{r.text}</Typography>
+                  <Typography variant="body2" sx={{ color: 'var(--app-text)' }}>{r.text}</Typography>
 
                   <Typography
                     variant="caption"
-                    sx={{ color: 'rgba(255,255,255,0.8)', cursor: 'pointer', mt: 1 }}
+                    sx={{ color: 'rgba(var(--ion-text-rgb),0.8)', cursor: 'pointer', mt: 1 }}
                     onClick={() => history.push(`/movie/${r.movieId}`)}
                   >
                     {titles[r.movieId] ? `Película: ${titles[r.movieId]}` : `Película: ${r.movieId}`}

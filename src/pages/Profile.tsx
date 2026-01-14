@@ -8,14 +8,11 @@ const KEY = 'user_name';
 
 const Profile: React.FC = () => {
   const history = useHistory();
-  // field starts empty as requested
   const [name, setName] = useState('');
-  // savedName reflects the currently active saved name (may come from localStorage)
   const [savedName, setSavedName] = useState(localStorage.getItem(KEY) || '');
   const [reviews, setReviews] = useState<any[]>([]);
 
   useEffect(() => {
-    // Update reviews whenever savedName changes
     if (!savedName) {
       setReviews([]);
       return;
@@ -28,12 +25,9 @@ const Profile: React.FC = () => {
     if (!name || !name.trim()) return;
     localStorage.setItem(KEY, name);
     setSavedName(name);
-    // notify other parts of the app (e.g., Reviews) to refresh
     window.dispatchEvent(new Event('app:reviews-updated'));
-    // refresh reviews
     const all = getAll();
     setReviews(all.filter((r: any) => (r.author || '').toString() === name));
-    // clear input after saving
     setName('');
   };
 
@@ -52,10 +46,9 @@ const Profile: React.FC = () => {
       </IonHeader>
       <IonContent fullscreen>
         <Box sx={{ p: 2 }}>
-          {/* label and current saved name */}
           <Box sx={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-            <Typography variant="h6" sx={{ color: '#fff' }}>Nombre de usuario</Typography>
-            <Typography variant="subtitle2" sx={{ color: 'rgba(255,255,255,0.7)' }}>{savedName || 'Sin definir'}</Typography>
+            <Typography variant="h6" sx={{ color: 'var(--app-text)' }}>Nombre de usuario</Typography>
+            <Typography variant="subtitle2" sx={{ color: 'var(--app-text-muted)' }}>{savedName || 'Sin definir'}</Typography>
           </Box>
 
           <Box sx={{ mt: 1 }}>
@@ -66,10 +59,10 @@ const Profile: React.FC = () => {
               size="small"
               variant="outlined"
               sx={{
-                backgroundColor: 'rgba(255,255,255,0.02)',
-                '& .MuiOutlinedInput-root': { color: '#fff', borderColor: 'rgba(255,255,255,0.12)' },
-                '& .MuiInputBase-input': { color: '#fff' },
-                '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.12)' },
+                backgroundColor: 'rgba(var(--ion-text-rgb),0.02)',
+                '& .MuiOutlinedInput-root': { color: 'var(--app-text)', borderColor: 'rgba(var(--ion-text-rgb),0.12)' },
+                '& .MuiInputBase-input': { color: 'var(--app-text)' },
+                '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(var(--ion-text-rgb),0.12)' },
               }}
             />
           </Box>
@@ -81,8 +74,8 @@ const Profile: React.FC = () => {
               disabled={!(name && name.trim().length > 0)}
               sx={{
                 '&.Mui-disabled': {
-                  backgroundColor: 'rgba(255,255,255,0.12)',
-                  color: 'rgba(255,255,255,0.6)'
+                  backgroundColor: 'rgba(var(--ion-text-rgb),0.12)',
+                  color: 'rgba(var(--ion-text-rgb),0.6)'
                 }
               }}
             >
@@ -97,12 +90,12 @@ const Profile: React.FC = () => {
             ) : (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
                 {reviews.map((r) => (
-                  <Box key={r.id} sx={{ p: 2, borderRadius: 2, border: '1px solid rgba(255,255,255,0.12)', backgroundColor: 'rgba(255,255,255,0.02)', color: '#fff' }}>
+                  <Box key={r.id} sx={{ p: 2, borderRadius: 2, border: '1px solid rgba(var(--ion-text-rgb),0.12)', backgroundColor: 'rgba(var(--ion-text-rgb),0.02)', color: 'var(--app-text)' }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Typography variant="subtitle2">{r.author || 'Anónimo'}</Typography>
-                      <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)' }}>{r.rating} ⭐ • {r.date}</Typography>
+                      <Typography variant="caption" sx={{ color: 'var(--app-text-muted)' }}>{r.rating} ⭐ • {r.date}</Typography>
                     </Box>
-                    <Typography variant="body2" sx={{ color: '#fff', mt: 1 }}>{r.text}</Typography>
+                    <Typography variant="body2" sx={{ color: 'var(--app-text)', mt: 1 }}>{r.text}</Typography>
                     <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
                       <Button size="small" variant="outlined" onClick={() => history.push(`/review/${r.id}/edit`)}>Editar</Button>
                       <Button size="small" variant="text" onClick={() => removeReview(r.id)}>Borrar</Button>

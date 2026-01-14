@@ -1,2 +1,108 @@
-/* For information on how to create your own theme, please refer to:
-http://ionicframework.com/docs/theming/ */
+:root {
+  --ion-background-color: #ffffff;
+  --ion-text-color: #000000;
+  --ion-text-rgb: 0, 0, 0; 
+  --app-bg: var(--ion-background-color);
+  --app-text: var(--ion-text-color);
+  --app-text-muted: rgba(var(--ion-text-rgb), 0.7);
+  --card-bg: #ffffff;
+  --card-text: var(--ion-text-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ion-background-color: #000000;
+    --ion-text-color: #ffffff;
+    --ion-text-rgb: 255, 255, 255;
+    --card-bg: #121212;
+  }
+}
+
+body.dark, .dark, ion-app.dark {
+  --ion-background-color: #000000;
+  --ion-text-color: #ffffff;
+  --ion-text-rgb: 255, 255, 255;
+  --card-bg: #121212;
+}
+
+ion-app, body, #root {
+  background: var(--app-bg);
+  color: var(--app-text);
+}
+
+.app-text {
+  color: var(--app-text) !important;
+}
+
+.movie-card {
+  background: var(--card-bg);
+  color: var(--card-text);
+}
+
+:root {
+  --rating-blur-bg: rgba(255,255,255,0.8);
+  --rating-blur-border: rgba(0,0,0,0.06);
+  --star-color: #f6c744;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --rating-blur-bg: rgba(0,0,0,0.6);
+    --rating-blur-border: rgba(255,255,255,0.06);
+    --star-color: #f6c744;
+  }
+}
+
+body.dark, .dark, ion-app.dark {
+  --rating-blur-bg: rgba(0,0,0,0.6);
+  --rating-blur-border: rgba(255,255,255,0.06);
+  --star-color: #f6c744;
+}
+
+ion-tab-bar {
+  background: var(--ion-background-color) !important;
+  color: var(--ion-text-color) !important;
+  border-top: 1px solid rgba(var(--ion-text-rgb),0.06);
+}
+
+.rating-summary {
+  backdrop-filter: blur(6px);
+  background: var(--rating-blur-bg);
+  border: 1px solid var(--rating-blur-border);
+  border-radius: 10px;
+  padding: 12px;
+  color: var(--app-text);
+}
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.rating-stars {
+  min-width: 68px;
+  color: var(--star-color);
+  font-weight: 600;
+}
+
+.rating-track {
+  flex: 1;
+  height: 10px;
+  background: rgba(var(--ion-text-rgb),0.12);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.rating-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2b9af3, #1677ff);
+  border-radius: 6px;
+}
+
+.rating-percent {
+  min-width: 44px;
+  text-align: right;
+  color: var(--app-text-muted);
+}

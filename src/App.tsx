@@ -10,12 +10,13 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, square, triangle, search as searchIcon } from 'ionicons/icons';
+import { ellipse, square, triangle, time as timeIcon } from 'ionicons/icons';
 import Search from './pages/Search';
 import Home from './pages/Home';
 import MovieDetail from './pages/MovieDetail';
 import ReviewForm from './pages/ReviewForm';
 import Reviews from './pages/Reviews';
+import Watchlist from './pages/Watchlist';
 import Profile from './pages/Profile';
 
 /* Core CSS required for Ionic components to work properly */
@@ -73,6 +74,9 @@ const App: React.FC = () => (
           <Route exact path="/">
             <Home />
           </Route>
+          <Route exact path="/watchlist">
+            <Watchlist />
+          </Route>
           <Route exact path="/search">
             <Search />
           </Route>
@@ -82,9 +86,9 @@ const App: React.FC = () => (
             <IonIcon aria-hidden="true" icon={triangle} />
             <IonLabel>Inicio</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="search" href="/search">
-            <IonIcon aria-hidden="true" icon={searchIcon} />
-            <IonLabel>Buscar</IonLabel>
+          <IonTabButton tab="watchlist" href="/watchlist">
+            <IonIcon aria-hidden="true" icon={timeIcon} />
+            <IonLabel>Pendientes</IonLabel>
           </IonTabButton>
           <IonTabButton tab="reviews" href="/reviews">
             <IonIcon aria-hidden="true" icon={ellipse} />

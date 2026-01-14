@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSpinner, IonButton } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSpinner, IonButton, IonButtons, IonIcon } from '@ionic/react';
+import { search as searchIcon } from 'ionicons/icons';
 import { Box, Typography, Chip, Avatar, Divider, Button } from '@mui/material';
 import tmdb from '../services/tmdb';
 import MovieCardMui from '../components/MovieCardMui';
@@ -73,16 +74,24 @@ const MovieDetail: React.FC = () => {
   const cast = (movie.credits?.cast || []).slice(0, 8);
   const recommendations = movie.recommendations?.results || [];
 
-  // Reviews: simple almacenamiento local
   const reviewsKey = `reviews_${movie.id}`;
   const stored = localStorage.getItem(reviewsKey);
   const reviews = stored ? JSON.parse(stored) : [];
+
+  const starLevels = [5, 4, 3, 2, 1];
+  const counts = starLevels.map((s) => reviews.filter((r: any) => Math.round(Number(r.rating || 0)) === s).length);
+  const totalRatings = counts.reduce((a, b) => a + b, 0);
 
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonTitle>{movie.title}</IonTitle>
+          <IonButtons slot="end">
+            <IonButton routerLink="/search" aria-label="Buscar">
+              <IonIcon icon={searchIcon} />
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
@@ -102,7 +111,7 @@ const MovieDetail: React.FC = () => {
               </Box>
               <Box sx={{ mt: 2 }}>
                 <Typography variant="subtitle1">Calificación: ⭐ {movie.vote_average}</Typography>
-                <Typography variant="body2" sx={{ color: '#fff' }}>
+                <Typography variant="body2" sx={{ color: 'var(--app-text-muted)' }}>
                   {movie.release_date} • {movie.runtime} min
                 </Typography>
                 <Box sx={{ mt: 1 }}>
@@ -111,7 +120,7 @@ const MovieDetail: React.FC = () => {
                       key={g.id}
                       label={g.name}
                       size="small"
-                      sx={{ mr: 0.5, mt: 0.5, color: '#fff', bgcolor: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}
+                      sx={{ mr: 0.5, mt: 0.5, color: 'var(--app-text)', bgcolor: 'rgba(var(--ion-text-rgb),0.06)', border: '1px solid rgba(var(--ion-text-rgb),0.08)' }}
                     />
                   ))}
                 </Box>
@@ -121,6 +130,23 @@ const MovieDetail: React.FC = () => {
             <Box sx={{ minWidth: 0, overflow: 'hidden' }}>
               <Typography variant="h6">Sinopsis</Typography>
               <Typography sx={{ mb: 2 }}>{movie.overview}</Typography>
+
+              <Box className="rating-summary" sx={{ mt: 1, mb: 2 }}>
+                {starLevels.map((s, i) => {
+                  const count = counts[i] || 0;
+                  const percent = totalRatings ? Math.round((count / totalRatings) * 100) : 0;
+                  return (
+                    <div key={s} className="rating-row">
+                      <div className="rating-stars">{'★'.repeat(s)}</div>
+                      <div className="rating-track"><div className="rating-fill" style={{ width: `${percent}%` }} /></div>
+                      <div className="rating-percent">{percent}% <span style={{ color: 'var(--app-text-muted)', marginLeft: 6 }}>{count}</span></div>
+                    </div>
+                  );
+                })}
+                {totalRatings === 0 && (
+                  <Typography variant="caption" sx={{ color: 'var(--app-text-muted)' }}>Aún no hay reseñas para esta película</Typography>
+                )}
+              </Box>
 
               {trailer && (
                 <Box sx={{ mb: 2, width: '100%' }}>
@@ -197,10 +223,10 @@ const MovieDetail: React.FC = () => {
                       alt={c.name}
                       sx={{ width: 72, height: 72, margin: '0 auto' }}
                     />
-                    <Typography variant="caption" display="block" noWrap sx={{ color: '#fff' }}>
+                    <Typography variant="caption" display="block" noWrap sx={{ color: 'var(--app-text)' }}>
                       {c.name}
                     </Typography>
-                    <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.8)' }} display="block" noWrap>
+                    <Typography variant="caption" sx={{ color: 'var(--app-text-muted)' }} display="block" noWrap>
                       {c.character}
                     </Typography>
                   </Box>
@@ -234,11 +260,11 @@ const MovieDetail: React.FC = () => {
               ) : (
                 <Box sx={{ mt: 1 }}>
                   {reviews.map((r: any, idx: number) => (
-                    <Box key={r.id || idx} sx={{ mb: 1, p: 1, border: '1px solid rgba(0,0,0,0.08)', borderRadius: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Box key={r.id || idx} sx={{ mb: 1, p: 1, border: '1px solid rgba(var(--ion-text-rgb),0.12)', backgroundColor: 'rgba(var(--ion-text-rgb),0.02)', borderRadius: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Box>
-                        <Typography variant="subtitle2">{r.author || 'Anónimo'}</Typography>
-                        <Typography variant="body2">{r.text}</Typography>
-                        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)' }}>{r.rating} ⭐ • {r.date}</Typography>
+                        <Typography variant="subtitle2" sx={{ color: 'var(--app-text)' }}>{r.author || 'Anónimo'}</Typography>
+                        <Typography variant="body2" sx={{ color: 'var(--app-text)' }}>{r.text}</Typography>
+                        <Typography variant="caption" sx={{ color: 'var(--app-text-muted)' }}>{r.rating} ⭐ • {r.date}</Typography>
                       </Box>
                       <Box>
                         {r.id && (

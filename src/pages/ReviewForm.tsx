@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/react';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon } from '@ionic/react';
+import { search as searchIcon } from 'ionicons/icons';
 import { Box, TextField, Button, Typography, Rating, Avatar } from '@mui/material';
 import * as reviewsService from '../services/reviews';
 
@@ -73,7 +74,6 @@ const ReviewForm: React.FC = () => {
     const currentUser = localStorage.getItem('user_name') || '';
     const nameToUse = author || currentUser || 'Anónimo';
 
-    // persist chosen name as the user's name if they provided it
     if (nameToUse && nameToUse !== currentUser) {
       localStorage.setItem('user_name', nameToUse);
     }
@@ -89,7 +89,6 @@ const ReviewForm: React.FC = () => {
     if (id) payload.id = id;
 
     const saved = reviewsService.saveReview(payload);
-    // navigate back to movie detail
     history.push(`/movie/${saved.movieId}`);
   };
 
@@ -98,6 +97,11 @@ const ReviewForm: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonTitle>{id ? 'Editar reseña' : 'Nueva reseña'}</IonTitle>
+          <IonButtons slot="end">
+            <IonButton routerLink="/search" aria-label="Buscar">
+              <IonIcon icon={searchIcon} />
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>
@@ -114,8 +118,8 @@ const ReviewForm: React.FC = () => {
             onChange={(e) => setText(e.target.value)}
             variant="outlined"
             sx={{
-              '& .MuiOutlinedInput-root': { backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: 1 },
-              '& .MuiInputBase-input': { color: '#fff' },
+              '& .MuiOutlinedInput-root': { backgroundColor: 'rgba(var(--ion-text-rgb),0.04)', borderRadius: 1 },
+              '& .MuiInputBase-input': { color: 'var(--app-text)' },
             }}
           />
 

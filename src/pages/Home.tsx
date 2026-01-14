@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSpinner } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSpinner, IonButtons, IonButton, IonIcon } from '@ionic/react';
+import { search as searchIcon } from 'ionicons/icons';
 import { Box, Typography, Button } from '@mui/material';
 import tmdb from '../services/tmdb';
 import MovieCardMui from '../components/MovieCardMui';
@@ -58,6 +59,11 @@ const Home: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonTitle>Inicio</IonTitle>
+          <IonButtons slot="end">
+            <IonButton routerLink="/search" aria-label="Buscar">
+              <IonIcon icon={searchIcon} />
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
