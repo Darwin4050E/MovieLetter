@@ -65,7 +65,6 @@ const Watchlist: React.FC = () => {
             </Box>
           )}
 
-          <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>Mi lista</Typography>
           {items.length === 0 ? (
             <Typography sx={{ color: 'var(--app-text-muted)' }}>No tienes películas pendientes. Agrega alguna usando la búsqueda de arriba.</Typography>
           ) : (
