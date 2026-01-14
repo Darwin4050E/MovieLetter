@@ -1,19 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import { Box, Typography, TextField, Button } from '@mui/material';
+import { Box, Typography, TextField, Button, Avatar } from '@mui/material';
 import { getAll, deleteReview } from '../services/reviews';
 import MovieCardMui from '../components/MovieCardMui';
 import { getAll as getFavorites } from '../services/favorites';
 import { useHistory } from 'react-router-dom';
 
 const KEY = 'user_name';
+const PROFILE_PIC_KEY = 'profile_photo_v1';
 
 const Profile: React.FC = () => {
   const history = useHistory();
   const [name, setName] = useState('');
   const [savedName, setSavedName] = useState(localStorage.getItem(KEY) || '');
+  const [photo, setPhoto] = useState<string | null>(localStorage.getItem(PROFILE_PIC_KEY) || null);
   const [reviews, setReviews] = useState<any[]>([]);
   const [favorites, setFavorites] = useState<any[]>([]);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (!savedName) {
@@ -45,6 +48,22 @@ const Profile: React.FC = () => {
     setReviews((s) => s.filter((r) => r.id !== id));
   };
 
+  const handlePick = () => {
+    inputRef.current?.click();
+  };
+
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      setPhoto(result);
+      localStorage.setItem(PROFILE_PIC_KEY, result);
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -54,6 +73,15 @@ const Profile: React.FC = () => {
       </IonHeader>
       <IonContent fullscreen>
         <Box sx={{ p: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+            <input ref={inputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFile} />
+            <Box onClick={handlePick} sx={{ cursor: 'pointer', textAlign: 'center' }}>
+              <Avatar src={photo || undefined} alt={savedName || 'Perfil'} sx={{ width: 120, height: 120, mx: 'auto' }}>
+                {!photo && (savedName ? savedName[0].toUpperCase() : 'U')}
+              </Avatar>
+              <Typography variant="caption" sx={{ display: 'block', mt: 1, color: 'var(--app-text-muted)' }}>Subir foto</Typography>
+            </Box>
+          </Box>
           <Box sx={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
             <Typography variant="h6" sx={{ color: 'var(--app-text)' }}>Nombre de usuario</Typography>
             <Typography variant="subtitle2" sx={{ color: 'var(--app-text-muted)' }}>{savedName || 'Sin definir'}</Typography>
@@ -92,7 +120,7 @@ const Profile: React.FC = () => {
           </Box>
 
           <Box sx={{ mt: 3 }}>
-            <Typography variant="h6">Mis reseñas</Typography>
+            <Typography variant="h6">Mis Reseñas</Typography>
             {reviews.length === 0 ? (
               <Typography sx={{ color: 'text.secondary' }}>Aún no tienes reseñas.</Typography>
             ) : (
