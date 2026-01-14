@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSpinner, IonButton, IonButtons, IonIcon } from '@ionic/react';
-import { search as searchIcon } from 'ionicons/icons';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSpinner, IonButton, IonButtons } from '@ionic/react';
 import { Box, Typography, Chip, Avatar, Divider, Button } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import tmdb from '../services/tmdb';
 import MovieCardMui from '../components/MovieCardMui';
 import { deleteReview } from '../services/reviews';
+import * as favoritesService from '../services/favorites';
+import * as watchlistService from '../services/watchlist';
 
 interface Params {
   id: string;
@@ -16,6 +18,8 @@ const MovieDetail: React.FC = () => {
   const history = useHistory();
   const [movie, setMovie] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [inWatchlist, setInWatchlist] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -32,6 +36,29 @@ const MovieDetail: React.FC = () => {
       mounted = false;
     };
   }, [id]);
+
+  useEffect(() => {
+    if (!movie) return;
+    setIsFavorite(favoritesService.contains(movie.id));
+    setInWatchlist(watchlistService.contains(movie.id));
+  }, [movie]);
+
+  useEffect(() => {
+    const onWatchlist = () => {
+      if (!movie) return;
+      setInWatchlist(watchlistService.contains(movie.id));
+    };
+    const onFavorites = () => {
+      if (!movie) return;
+      setIsFavorite(favoritesService.contains(movie.id));
+    };
+    window.addEventListener('app:watchlist-updated', onWatchlist);
+    window.addEventListener('app:favorites-updated', onFavorites);
+    return () => {
+      window.removeEventListener('app:watchlist-updated', onWatchlist);
+      window.removeEventListener('app:favorites-updated', onFavorites);
+    };
+  }, [movie]);
 
   if (loading) {
     return (
@@ -89,7 +116,7 @@ const MovieDetail: React.FC = () => {
           <IonTitle>{movie.title}</IonTitle>
           <IonButtons slot="end">
             <IonButton routerLink="/search" aria-label="Buscar">
-              <IonIcon icon={searchIcon} />
+              <SearchIcon />
             </IonButton>
           </IonButtons>
         </IonToolbar>
@@ -126,11 +153,40 @@ const MovieDetail: React.FC = () => {
                 </Box>
               
                 <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
-                  <Button variant="contained" sx={{ flex: 1 }} onClick={() => console.log('Agregar Favorito clicked', movie.id)}>
-                    Agregar Favorito
+                  <Button
+                    variant={isFavorite ? 'outlined' : 'contained'}
+                    color={isFavorite ? 'secondary' : 'primary'}
+                    sx={{ flex: 1 }}
+                    onClick={() => {
+                      if (!movie) return;
+                      if (isFavorite) {
+                        favoritesService.remove(movie.id);
+                        setIsFavorite(false);
+                      } else {
+                        favoritesService.add({ id: movie.id, title: movie.title, poster_path: movie.poster_path });
+                        setIsFavorite(true);
+                      }
+                      window.dispatchEvent(new Event('app:favorites-updated'));
+                    }}
+                  >
+                    {isFavorite ? 'Eliminar Favorito' : 'Agregar Favorito'}
                   </Button>
-                  <Button variant="outlined" sx={{ flex: 1 }} onClick={() => console.log('Ver más tarde clicked', movie.id)}>
-                    Ver más tarde
+                  <Button
+                    variant={inWatchlist ? 'outlined' : 'contained'}
+                    sx={{ flex: 1 }}
+                    onClick={() => {
+                      if (!movie) return;
+                      if (inWatchlist) {
+                        watchlistService.remove(movie.id);
+                        setInWatchlist(false);
+                      } else {
+                        watchlistService.add({ id: movie.id, title: movie.title, poster_path: movie.poster_path });
+                        setInWatchlist(true);
+                      }
+                      window.dispatchEvent(new Event('app:watchlist-updated'));
+                    }}
+                  >
+                    {inWatchlist ? 'Quitar de ver más tarde' : 'Ver más tarde'}
                   </Button>
                 </Box>
               </Box>
@@ -246,7 +302,7 @@ const MovieDetail: React.FC = () => {
 
               <Typography variant="h6">Recomendadas</Typography>
               {recommendations.length === 0 ? (
-                <Typography sx={{ mt: 1, color: 'text.secondary' }}>No hay recomendaciones para esta película.</Typography>
+                <Typography sx={{ mt: 1, color: 'var(--app-text-muted)' }}>No hay recomendaciones para esta película.</Typography>
               ) : (
                 <Box sx={{ display: 'flex', overflowX: 'auto', gap: 2, py: 1, flexWrap: 'nowrap', WebkitOverflowScrolling: 'touch', msOverflowStyle: 'none' }}>
                   {recommendations.map((r: any) => (

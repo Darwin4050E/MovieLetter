@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonViewWillEnter, IonButtons, IonButton, IonIcon } from '@ionic/react';
-import { search as searchIcon } from 'ionicons/icons';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonViewWillEnter, IonButtons, IonButton } from '@ionic/react';
 import { Box, Typography, Button } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import SearchBar from '../components/SearchBar';
 import { getAll } from '../services/reviews';
 import { useHistory } from 'react-router-dom';
@@ -52,7 +52,7 @@ const Reviews: React.FC = () => {
           <IonTitle>Reseñas</IonTitle>
           <IonButtons slot="end">
             <IonButton routerLink="/search" aria-label="Buscar">
-              <IonIcon icon={searchIcon} />
+              <SearchIcon />
             </IonButton>
           </IonButtons>
         </IonToolbar>
@@ -65,7 +65,7 @@ const Reviews: React.FC = () => {
           </Box>
 
           {filtered.length === 0 ? (
-            <Typography sx={{ color: 'text.secondary' }}>No hay reseñas que coincidan.</Typography>
+            <Typography sx={{ color: 'var(--app-text-muted)' }}>No hay reseñas que coincidan.</Typography>
           ) : (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               {filtered.map((r: any) => (
@@ -91,7 +91,7 @@ const Reviews: React.FC = () => {
 
                   <Typography
                     variant="caption"
-                    sx={{ color: 'rgba(var(--ion-text-rgb),0.8)', cursor: 'pointer', mt: 1 }}
+                    sx={{ color: 'var(--app-text-muted)', cursor: 'pointer', mt: 1 }}
                     onClick={() => history.push(`/movie/${r.movieId}`)}
                   >
                     {titles[r.movieId] ? `Película: ${titles[r.movieId]}` : `Película: ${r.movieId}`}

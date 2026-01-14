@@ -1,7 +1,6 @@
 import { Redirect, Route } from 'react-router-dom';
 import {
   IonApp,
-  IonIcon,
   IonLabel,
   IonRouterOutlet,
   IonTabBar,
@@ -10,7 +9,10 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, square, triangle, time as timeIcon } from 'ionicons/icons';
+import HomeIcon from '@mui/icons-material/Home';
+import WatchLaterIcon from '@mui/icons-material/WatchLater';
+import RateReviewIcon from '@mui/icons-material/RateReview';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Search from './pages/Search';
 import Home from './pages/Home';
 import MovieDetail from './pages/MovieDetail';
@@ -83,19 +85,19 @@ const App: React.FC = () => (
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton tab="tab1" href="/">
-            <IonIcon aria-hidden="true" icon={triangle} />
+            <HomeIcon style={{ fontSize: 22 }} aria-hidden="true" />
             <IonLabel>Inicio</IonLabel>
           </IonTabButton>
           <IonTabButton tab="watchlist" href="/watchlist">
-            <IonIcon aria-hidden="true" icon={timeIcon} />
+            <WatchLaterIcon style={{ fontSize: 22 }} aria-hidden="true" />
             <IonLabel>Pendientes</IonLabel>
           </IonTabButton>
           <IonTabButton tab="reviews" href="/reviews">
-            <IonIcon aria-hidden="true" icon={ellipse} />
+            <RateReviewIcon style={{ fontSize: 22 }} aria-hidden="true" />
             <IonLabel>Reseñas</IonLabel>
           </IonTabButton>
           <IonTabButton tab="profile" href="/profile">
-            <IonIcon aria-hidden="true" icon={square} />
+            <AccountCircleIcon style={{ fontSize: 22 }} aria-hidden="true" />
             <IonLabel>Perfil</IonLabel>
           </IonTabButton>
         </IonTabBar>
