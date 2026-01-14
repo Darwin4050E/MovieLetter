@@ -7,22 +7,10 @@ import * as watchlist from '../services/watchlist';
 
 const Watchlist: React.FC = () => {
   const history = useHistory();
-  const [query, setQuery] = useState('');
   const [results, setResults] = useState<any[]>([]);
   const [items, setItems] = useState(watchlist.getAll());
 
   useEffect(() => setItems(watchlist.getAll()), []);
-
-  const doSearch = async () => {
-    if (!query || !query.trim()) return setResults([]);
-    try {
-      const res = await tmdb.searchMovies(query.trim());
-      setResults(res.results || []);
-    } catch (e) {
-      console.error('Search error', e);
-      setResults([]);
-    }
-  };
 
   const addItem = (m: any) => {
     watchlist.add({ id: m.id, title: m.title, poster_path: m.poster_path });
@@ -43,11 +31,6 @@ const Watchlist: React.FC = () => {
       </IonHeader>
       <IonContent fullscreen>
         <Box sx={{ p: 2 }}>
-          <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-            <TextField fullWidth placeholder="Buscar película para agregar..." value={query} onChange={(e) => setQuery(e.target.value)} size="small" />
-            <Button variant="contained" onClick={doSearch} sx={{ alignSelf: 'stretch' }}>Buscar</Button>
-          </Box>
-
           {results.length > 0 && (
             <Box sx={{ display: 'grid', gap: 1, mb: 2 }}>
               {results.map((r) => (
