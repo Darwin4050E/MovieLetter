@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonViewWillEnter } from '@ionic/react';
 import { Box, Typography, TextField, Button, Avatar } from '@mui/material';
 import { getAll, deleteReview } from '../services/reviews';
 import MovieCardMui from '../components/MovieCardMui';
@@ -18,18 +18,38 @@ const Profile: React.FC = () => {
   const [favorites, setFavorites] = useState<any[]>([]);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
-    if (!savedName) {
+  const loadReviews = () => {
+    const currentSavedName = localStorage.getItem(KEY) || '';
+    setSavedName(currentSavedName);
+    if (!currentSavedName) {
       setReviews([]);
       return;
     }
     const all = getAll();
-    setReviews(all.filter((r: any) => (r.author || '').toString() === savedName));
-  }, [savedName]);
+    setReviews(all.filter((r: any) => (r.author || '').toString() === currentSavedName));
+  };
 
   useEffect(() => {
-    const favs = getFavorites() || [];
-    setFavorites(favs.slice(0, 5));
+    loadReviews();
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('app:reviews-updated', loadReviews);
+    return () => window.removeEventListener('app:reviews-updated', loadReviews);
+  }, []);
+
+  useIonViewWillEnter(() => {
+    loadReviews();
+  });
+
+  useEffect(() => {
+    const load = () => {
+      const favs = getFavorites() || [];
+      setFavorites(favs.slice(0, 5));
+    };
+    load();
+    window.addEventListener('app:favorites-updated', load);
+    return () => window.removeEventListener('app:favorites-updated', load);
   }, []);
 
   const saveName = () => {
@@ -122,7 +142,7 @@ const Profile: React.FC = () => {
           <Box sx={{ mt: 3 }}>
             <Typography variant="h6">Mis Reseñas</Typography>
             {reviews.length === 0 ? (
-              <Typography sx={{ color: 'text.secondary' }}>Aún no tienes reseñas.</Typography>
+              <Typography sx={{ color: 'var(--app-text-muted)' }}>Aún no tienes reseñas.</Typography>
             ) : (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
                 {reviews.map((r) => (
@@ -146,7 +166,7 @@ const Profile: React.FC = () => {
           <Box sx={{ mt: 3 }}>
             <Typography variant="h6">Mis Favoritos</Typography>
             {favorites.length === 0 ? (
-              <Typography sx={{ color: 'text.secondary' }}>Aún no tienes favoritas.</Typography>
+              <Typography sx={{ color: 'var(--app-text-muted)' }}>Aún no tienes favoritos.</Typography>
             ) : (
               <Box sx={{ display: 'flex', gap: 2, overflowX: 'auto', py: 1, flexWrap: 'nowrap' }}>
                 {favorites.map((f: any) => (

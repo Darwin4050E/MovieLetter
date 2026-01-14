@@ -24,7 +24,13 @@ const SearchBar: React.FC<Props> = ({ onSearch, placeholder = 'Buscar películas
       value={value}
       onChange={(e) => setValue(e.target.value)}
       size="small"
-      sx={{ backgroundColor: '#fff', borderRadius: 1 }}
+      sx={{
+        backgroundColor: 'var(--card-bg)',
+        borderRadius: 1,
+        '& .MuiInputBase-input': { color: 'var(--app-text)' },
+        '& .MuiInputBase-input::placeholder': { color: 'var(--app-text-muted)' },
+        '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(var(--ion-text-rgb),0.12)' }
+      }}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">

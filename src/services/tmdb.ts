@@ -5,14 +5,22 @@
 
 type Params = Record<string, string | number | boolean>;
 
-const DEFAULT_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjYTg0NjYzYmI1MjJhMTVjZTdmZjhlOTQ5ZTNkM2Y4ZCIsIm5iZiI6MTc2ODE1NzY0My4xNDgsInN1YiI6IjY5NjNmMWNiNWE0YjcwMTA2NDkzNDM5YSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.eBUwVYOeIhlwzzxzbYdQHSZpVdYOt5wo_3Py_1xmssQ';
-
 class TmdbService {
   private base = 'https://api.themoviedb.org/3';
   private token: string;
 
   constructor(token?: string) {
-    this.token = token ?? (typeof import.meta !== 'undefined' ? (import.meta as any).env?.VITE_TMDB_TOKEN : undefined) ?? DEFAULT_TOKEN;
+    this.token = token ?? (typeof import.meta !== 'undefined' ? (import.meta as any).env?.VITE_TMDB_TOKEN : undefined);
+    if (!this.token) {
+      // No token configured — headers() will throw when requests are attempted.
+      // Keep a console warning to help developers set up `.env` files.
+      // Add a `.env.local` with `VITE_TMDB_TOKEN=your_token` (ignored by git by default).
+      // Example provided in `.env.example`.
+      // NOTE: Do NOT commit your real token to the repo.
+      // See README or project docs for secure handling.
+      // eslint-disable-next-line no-console
+      console.warn('TMDB token not configured. Set VITE_TMDB_TOKEN in an env file or pass a token when creating TmdbService.');
+    }
   }
 
   private headers() {
